@@ -153,7 +153,7 @@ The 2 deployment methods for AHA are:
 9. Scroll to the bottom and **click** *Next* again.   
 10. Scroll to the bottom and **click** the *checkbox* and **click** *Create stack*.   
 11. Wait until *Status* changes to *CREATE_COMPLETE* (roughly 2-4 minutes).
-12. If you'd like to configure email addresses for account-specific notifications (such as when a PHD notification is related to specific accounts in your Organization), go into the DynamoDB table that contains the name "DynamoDBAcctEmailTable" and click on the Items tab and then "Create item." Add the AWS account number for the aws-account-number field. Then append a List item. In the List, add a String object which contains the email address that should receive notifications specific to the account you specified.
+12. If you'd like to configure email addresses for account-specific notifications (such as when a PHD notification is related to specific accounts in your Organization), go into the DynamoDB table that contains the name "DynamoDBAcctEmailTable" and click on the Items tab and then "Create item." Add the AWS account number for the aws-account-number field. Then append a List item called "email-addresses". In the List, add a String object which contains the email address that should receive notifications specific to the account you specified.
 
 # Updating
 **Until this project is migrated to the AWS Serverless Application Model (SAM), updates will have to be done as described below:**
