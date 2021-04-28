@@ -155,6 +155,9 @@ The 2 deployment methods for AHA are:
 11. Wait until *Status* changes to *CREATE_COMPLETE* (roughly 2-4 minutes).
 12. If you'd like to configure email addresses for account-specific notifications (such as when a PHD notification is related to specific accounts in your Organization), go into the DynamoDB table that contains the name "DynamoDBAcctEmailTable" and click on the Items tab and then "Create item." Add the AWS account number for the aws-account-number field. Then append a List item called "email-addresses". In the List, add a String object which contains the email address that should receive notifications specific to the account you specified.
 
+![](https://github.com/aws-samples/aws-health-aware/blob/main/readme-images/add-email-for-account-dynamodb.png?raw=1)
+
+
 # Updating
 **Until this project is migrated to the AWS Serverless Application Model (SAM), updates will have to be done as described below:**
 1. Download the updated CloudFormation Template .yml file and 2 `.py` files.   
