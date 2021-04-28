@@ -138,6 +138,8 @@ def send_org_alert(event_details, affected_org_accounts, affected_org_entities, 
         try:
             print("Sending the alert to the emails")
             send_org_email(event_details, event_type, affected_org_accounts, affected_org_entities)
+            send_org_email_to_associated_acct_emails(event_details, event_type, affected_org_accounts, affected_org_entities)
+
         except HTTPError as e:
             print("Got an error while sending message to Email: ", e.code, e.reason)
         except URLError as e:
@@ -248,7 +250,48 @@ def send_org_email(event_details, eventType, affected_org_accounts, affected_org
         },
     )
 
-
+def send_org_email_to_associated_acct_emails(event_details, eventType, affected_org_accounts, affected_org_entities):
+    
+    print("In send_org_email_to_associated_acct_emails")
+    print("Affected org accounts: "+str(affected_org_accounts))
+    
+    # Iterate through all of my affected accounts, get the associated email addresses from DynamoDB
+    # Then send those email adddresses a notification about their account.
+    for account in affected_org_accounts:
+        
+        emails = get_health_org_account_emails(account)
+        
+        if len(emails) == 0:
+            print("Found no email addresses associated with AWS account " + str(account))
+            return
+        
+        print("Retrieved email(s) " + str(emails))
+        
+        SENDER = os.environ['FROM_EMAIL']
+        RECIPIENT = emails
+        #AWS_REGION = "us-east-1"
+        AWS_REGION = os.environ['AWS_REGION']
+        SUBJECT = os.environ['EMAIL_SUBJECT']
+        BODY_HTML = get_org_message_for_email(event_details, eventType, [account], affected_org_entities)
+        client = boto3.client('ses', region_name=AWS_REGION)
+        response = client.send_email(
+            Source=SENDER,
+            Destination={
+                'ToAddresses': RECIPIENT
+            },
+            Message={
+                'Body': {
+                    'Html': {
+                        'Data': BODY_HTML
+                    },
+                },
+                'Subject': {
+                    'Charset': 'UTF-8',
+                    'Data': SUBJECT,
+                },
+            },
+        )
+    
 # organization view affected accounts
 def get_health_org_accounts(health_client, event, event_arn):
     affected_org_accounts = []
@@ -262,6 +305,26 @@ def get_health_org_accounts(health_client, event, event_arn):
         affected_org_accounts = affected_org_accounts + (parsed_event_accounts['affectedAccounts'])
     return affected_org_accounts
 
+# Get associated email addresses for all org accounts
+def get_health_org_account_emails(affected_org_account):
+
+    # open dynamoDB
+    dynamodb = boto3.resource("dynamodb")
+    ddb_table = os.environ['DYNAMODB_TABLE_ACCT_EMAILS']
+    
+    account_email_ddb_table = dynamodb.Table(ddb_table)
+    
+    items = account_email_ddb_table.query(
+        KeyConditionExpression=Key('aws-account-number').eq(int(affected_org_account))
+    )
+
+    if len(items["Items"]) < 1:
+        return [];
+    
+    affected_org_account_emails = items["Items"][0]["email-addresses"]
+    print(affected_org_account_emails)
+    
+    return affected_org_account_emails
 
 # organization view affected entities (aka resources)
 def get_health_org_entities(health_client, event, event_arn, affected_org_accounts):

@@ -478,7 +478,7 @@ def get_org_message_for_email(event_details, event_type, affected_org_accounts, 
     if len(affected_org_entities) >= 1:
         affected_org_entities = "\n".join(affected_org_entities)
     else:
-        affected_org_entities = "All servicess related resources in region"
+        affected_org_entities = "All services related resources in region"
     if len(affected_org_accounts) >= 1:
         affected_org_accounts = "\n".join(affected_org_accounts)
     else:
@@ -488,7 +488,7 @@ def get_org_message_for_email(event_details, event_type, affected_org_accounts, 
         <html>
             <body>
                 <h>Greetings from AWS Health Aware,</h><br>
-                <p>There is an AWS incident that is in effect which may likely impact your resources. Here are the details:<br><br>
+                <p>There is an AWS incident that is in effect which may  impact your resources. Here are the details:<br><br>
                 <b>Account(s):</b> {affected_org_accounts}<br>
                 <b>Resource(s):</b> {affected_org_entities}<br>
                 <b>Service:</b> {event_details['successfulSet'][0]['event']['service']}<br>
