@@ -202,6 +202,13 @@ Resources:
                 Resource: !GetAtt DynamoDBTable.Arn
               - Effect: Allow
                 Action:
+                  - dynamodb:GetItem
+                  - dynamodb:Scan
+                  - dynamodb:Query
+                  - dynamodb:GetRecords
+                Resource: !GetAtt DynamoDBAcctEmailTable.Arn
+              - Effect: Allow
+                Action:
                   - events:PutEvents
                 Resource: !Sub 'arn:aws:events:${AWS::Region}:${AWS::AccountId}:event-bus/${EventBusName}'
   DynamoDBTable:
@@ -219,6 +226,19 @@ Resources:
       TimeToLiveSpecification:
         AttributeName: ttl
         Enabled: TRUE
+  DynamoDBAcctEmailTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: aws-account-number
+          AttributeType: N
+      KeySchema:
+        - AttributeName: aws-account-number
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
   LambdaSchedule:
     Type: 'AWS::Events::Rule'
     Properties:
@@ -306,6 +326,8 @@ Resources:
             Ref: Subject
           DYNAMODB_TABLE:
             Ref: DynamoDBTable
+          DYNAMODB_TABLE_ACCT_EMAILS:
+            Ref: DynamoDBAcctEmailTable
           EVENT_SEARCH_BACK:
             Ref: EventSearchBack
           ORG_STATUS:

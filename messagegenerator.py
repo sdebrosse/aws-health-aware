@@ -432,7 +432,7 @@ def get_message_for_email(event_details, event_type):
         <html>
             <body>
                 <h>Greetings from AWS Health Aware,</h><br>
-                <p>There is an AWS incident that is in effect which may likely impact your resources. Here are the details:<br><br>
+                <p>There is an AWS incident that is in effect which may impact your resources. Here are the details:<br><br>
                 <b>Account(s):</b> All accounts in region<br>
                 <b>Resource(s):</b> All service related resources in region<br>
                 <b>Service:</b> {event_details['successfulSet'][0]['event']['service']}<br>
@@ -488,7 +488,7 @@ def get_org_message_for_email(event_details, event_type, affected_org_accounts, 
         <html>
             <body>
                 <h>Greetings from AWS Health Aware,</h><br>
-                <p>There is an AWS incident that is in effect which may  impact your resources. Here are the details:<br><br>
+                <p>There is an AWS incident that is in effect which may impact your resources. Here are the details:<br><br>
                 <b>Account(s):</b> {affected_org_accounts}<br>
                 <b>Resource(s):</b> {affected_org_entities}<br>
                 <b>Service:</b> {event_details['successfulSet'][0]['event']['service']}<br>
